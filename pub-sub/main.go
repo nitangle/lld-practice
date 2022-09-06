@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"pub-sub/Consumer"
-	"pub-sub/Publisher"
-	"pub-sub/Queue"
+	"lld-practice/pub-sub/Consumer"
+	"lld-practice/pub-sub/Publisher"
+	"lld-practice/pub-sub/Queue"
 	"time"
 )
 

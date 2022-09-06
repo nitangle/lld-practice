@@ -1,7 +1,7 @@
 package Consumer
 
 import (
-	pub_sub "pub-sub/Message"
+	pub_sub "lld-practice/pub-sub/Message"
 )
 
 type Consumer interface {

@@ -1,6 +1,6 @@
 package Publisher
 
-import "pub-sub/Queue"
+import "lld-practice/pub-sub/Queue"
 
 type Publisher interface {
 	Publish(topic string, q Queue.Queue)

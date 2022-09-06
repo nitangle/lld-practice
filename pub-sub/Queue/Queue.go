@@ -2,8 +2,8 @@ package Queue
 
 import (
 	"fmt"
-	"pub-sub/Consumer"
-	"pub-sub/Message"
+	"lld-practice/pub-sub/Consumer"
+	"lld-practice/pub-sub/Message"
 	"sync"
 	"time"
 )
@@ -19,6 +19,9 @@ type ConsumerInfo struct {
 	consumer Consumer.Consumer
 	offset   int
 }
+
+// TODO: Can use interface as type for Subscribers which will implement get and put to accommodate variable data types
+
 type SimpleQueue struct {
 	wg          sync.WaitGroup
 	Subscribers map[string][]ConsumerInfo
@@ -34,6 +37,7 @@ func NewSimpleQueue() SimpleQueue {
 		TopicQueues: topicQueues,
 	}
 }
+
 func (s *SimpleQueue) Subscribe(topic string, consumer Consumer.Consumer) {
 	if _, ok := s.Subscribers[topic]; !ok {
 		s.Subscribers[topic] = make([]ConsumerInfo, 0)
@@ -59,12 +63,14 @@ func (s *SimpleQueue) SendToTopic(topic string, data []byte) {
 	msg := Message.Message{Data: data, Id: id, Ch: ch}
 	ti := s.TopicQueues[topic]
 	ti.messages = append(ti.messages, msg)
+	//TODO: remove
 	ti.len++
 	s.TopicQueues[topic] = ti
 
 	fmt.Println("added message to topic ", topic)
 }
 
+// Tightly coupled with internal ds implementation
 func (s *SimpleQueue) Notify() {
 	fmt.Println("running notify")
 	for topic, info := range s.TopicQueues {
@@ -76,15 +82,14 @@ func (s *SimpleQueue) Notify() {
 					go func(idx int, topic string, info TopicInfo) {
 						defer s.wg.Done()
 						fmt.Println("called consumer for topic", topic)
-						consumer := s.Subscribers[topic][idx]
-						consumer.consumer.Consume(info.messages[consumer.offset])
-						consumer.offset += 1
-						s.Subscribers[topic][idx] = consumer
+						subscriberInfo := s.Subscribers[topic][idx]
+						subscriberInfo.consumer.Consume(info.messages[subscriberInfo.offset])
+						subscriberInfo.offset += 1
+						s.Subscribers[topic][idx] = subscriberInfo
 					}(idx, topic, info)
 				}
 
 			}
-
 		}
 	}
 

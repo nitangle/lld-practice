@@ -1,3 +1,3 @@
-module pub-sub
+module lld-practice/pub-sub
 
 go 1.17

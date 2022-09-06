@@ -3,7 +3,7 @@ package Publisher
 import (
 	"encoding/json"
 	"fmt"
-	"pub-sub/Queue"
+	"lld-practice/pub-sub/Queue"
 )
 
 type SimplePublisher struct{}
